@@ -1,4 +1,9 @@
+import sys
 import pygame
+#to run the code, use cd C:\Users\osabr\OneDrive\Documents\GitHub\cheeseTD3
+#.\.venv\Scripts\Activate.ps1
+#python main.py
+print(f'Running with {sys.executable}')
 
 # Initialize Pygame
 pygame.init()
@@ -14,8 +19,4 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Fill the screen with a color (e.g., white)
-    screen.fill((255, 255, 255))
-
-    # Update the display
-    pygame.display.flip()
+pygame.quit()

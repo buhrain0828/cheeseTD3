@@ -1,0 +1,16 @@
+# Virtual environment
+.venv/
+
+# Python cache and build
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.egg-info/
+
+# Editor directories
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
