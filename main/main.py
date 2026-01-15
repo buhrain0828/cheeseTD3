@@ -31,7 +31,7 @@ foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
 waypoint = [
     (100,100),
     (400,200),
-    (400,100),
+    (400,100), 
     (200,300)
 ]
 
@@ -72,4 +72,4 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
-print("Game exited")
+print("Game closed.")
