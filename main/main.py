@@ -28,21 +28,23 @@ pygame.display.set_caption("CheeseTD3")
 #images
 foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
 
-foe = enemies.Foe((200,300), foe_image)
+waypoint = [
+    (100,100),
+    (400,200),
+    (400,100),
+    (200,300)
+]
+
+foe = enemies.Foe(waypoint, foe_image)
 print(foe)
 
 #create groups
 foe_group = pygame.sprite.Group()
 foe_group.add(foe)
-waypoint = [
-    (100,100),
-    (400,200),
-    (400,100),
-]
 
 
 #Player rectangle
-player = pygame.Rect((300, 250, 50, 50))
+player = pygame.Rect(300, 250, 50, 50)
 
 
 # Game loop
