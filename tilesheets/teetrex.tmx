@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="2">
+ <editorsettings>
+  <export target="teetrex..tmj" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../../../../../Downloads/path.tsx"/>
- <layer id="1" name="Tile Layer 1" width="32" height="32">
+ <layer id="1" name="treetrex" width="32" height="32">
+  <properties>
+   <property name="width" type="int" value="0"/>
+  </properties>
   <data encoding="csv">
 142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,370,371,372,373,142,142,142,
 142,142,142,193,194,194,194,194,194,194,194,194,194,194,194,194,194,194,142,142,142,142,142,142,142,370,371,372,373,142,142,142,
@@ -37,4 +43,9 @@
 142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142,142
 </data>
  </layer>
+ <objectgroup id="2" name="waypoint">
+  <object id="1" x="862.667" y="8">
+   <polyline points="0,0 -2.66667,468 -285.333,465.333 -290.667,178.667 -298.667,142.667 -301.333,93.3333 -305.333,48 -737.333,40 -736,369.333 -509.333,374.667 -472,372 -448,373.333 -446.667,489.333 -446.667,600 -705.333,601.333 -705.333,794.667 -605.333,790.667 -606.667,840 -314.667,836 -316,637.333 -130.667,632 -126.667,820 69.3333,822.667 64,792 148,792"/>
+  </object>
+ </objectgroup>
 </map>
