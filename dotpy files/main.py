@@ -2,6 +2,8 @@ import sys
 import os
 import pygame
 from mapspace import MapSpace
+import json
+from myce import Myce
 
 # Ensure the project root is on sys.path so absolute imports like `assets` resolve
 # when running this script from the `main/` subfolder.
@@ -10,7 +12,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 import variables as var
-import enemies as enemies
+import  enemies as enemies
 #to run the code, use cd C:\Users\osabr\OneDrive\Documents\GitHub\cheeseTD3
 #.\.venv\Scripts\Activate.ps1
 #python main.py
@@ -28,26 +30,30 @@ pygame.display.set_caption("CheeseTD3")
 
 #images
 #map
-map_image = pygame.image.load('assets/images/maps/dustbox.png').convert_alpha()
+map_image = pygame.image.load('assets/images/maps/teetrex.png').convert_alpha()
 #enemy
 foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
+#myce
+
+#load json level stuff
+with(open('tilesheets/teetrex..tmj')) as file:
+    mapspace_data = json.load(file)
 
 #create map space (map menu pnding)
-mapspace = MapSpace(map_image)
+mapspace = MapSpace(mapspace_data,map_image, var.SCREEN_WIDTH, var.SCREEN_HEIGHT)
+mapspace.objprocess()
 
-waypoint = [
-    (100,100),
-    (400,200),
-    (400,100), 
-    (200,300)
-]
 
-foe = enemies.Foe(waypoint, foe_image)
+
+
+
+foe = enemies.Foe(mapspace.wayp, foe_image)
 print(foe)
 
 #create groups
 foe_group = pygame.sprite.Group()
 foe_group.add(foe)
+myce_group = pygame.sprite.Group()
 
 
 #Player rectangle
@@ -63,8 +69,7 @@ while running:
 
     #draw map
     mapspace.draw(screen)
-    #draw path (use color from variables)
-    pygame.draw.lines(screen, var.GREY0, False, waypoint, 3)
+    
 
     #update groups
     foe_group.update()
@@ -77,6 +82,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        #click
+        if event.type == pygame.MOUSEBUTTONDOWN and even.button == 1:
+            mouse_pos = pygame.mouse.get
+            if mouse_pos [0] > var.SCREEN_WIDTH or mouse_pos[1] > var.SCREEN_HEIGHT:
+                myce = Myce()
+                myce_group.add(myce)
 
     # Update the display
     pygame.display.flip()
