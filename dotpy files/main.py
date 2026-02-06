@@ -4,6 +4,7 @@ import pygame
 from mapspace import MapSpace
 import json
 from myce import Myce
+import variables as var
 
 # Ensure the project root is on sys.path so absolute imports like `assets` resolve
 # when running this script from the `main/` subfolder.
@@ -28,7 +29,17 @@ pygame.init()
 screen = pygame.display.set_mode((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
 pygame.display.set_caption("CheeseTD3")
 
+#spawn myce
+def spawnmyce():
+    mouse_tile_x = mouse_pos[0] // var.TileSize
+    mouse_tile_y = mouse_pos[1] // var.TileSize
+    if mouse_pos[0] < var.SCREEN_WIDTH and mouse_pos[1] < var.SCREEN_HEIGHT:
+        myce = Myce(cursor_myce, mouse_tile_x, mouse_tile_y)
+        myce_group.add(myce)
+
 #images
+#myce
+map_image = pygame.image.load('assets/images/myce/myce1.png').convert_alpha()
 #map
 map_image = pygame.image.load('assets/images/maps/teetrex.png').convert_alpha()
 #enemy
@@ -83,11 +94,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         #click
-        if event.type == pygame.MOUSEBUTTONDOWN and even.button == 1:
-            mouse_pos = pygame.mouse.get
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
             if mouse_pos [0] > var.SCREEN_WIDTH or mouse_pos[1] > var.SCREEN_HEIGHT:
-                myce = Myce()
-                myce_group.add(myce)
+                spawnmyce()
+ 
 
     # Update the display
     pygame.display.flip()
