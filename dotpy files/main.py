@@ -1,107 +1,103 @@
 import sys
 import os
 import pygame
-from mapspace import MapSpace
 import json
+from mapspace import MapSpace
 from myce import Myce
+import enemies
 import variables as var
 
-# Ensure the project root is on sys.path so absolute imports like `assets` resolve
-# when running this script from the `main/` subfolder.
+# Ensure project root on sys.path for relative asset imports
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-import variables as var
-import  enemies as enemies
-#to run the code, use cd C:\Users\osabr\OneDrive\Documents\GitHub\cheeseTD3
-#.\.venv\Scripts\Activate.ps1
-#python main.py
 print(f'Running with {sys.executable}')
 
-
-#set up clock
-clock = pygame.time.Clock()
-
-
-# Initialize Pygame and the game window
 pygame.init()
+clock = pygame.time.Clock()
 screen = pygame.display.set_mode((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
 pygame.display.set_caption("CheeseTD3")
 
-#spawn myce
-def spawnmyce():
-    mouse_tile_x = mouse_pos[0] // var.TileSize
-    mouse_tile_y = mouse_pos[1] // var.TileSize
-    if mouse_pos[0] < var.SCREEN_WIDTH and mouse_pos[1] < var.SCREEN_HEIGHT:
-        myce = Myce(cursor_myce, mouse_tile_x, mouse_tile_y)
-        myce_group.add(myce)
+# safe asset loads
+try:
+    map_image = pygame.image.load('assets/images/maps/teetrex.png').convert_alpha()
+except Exception:
+    map_image = pygame.Surface((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
+    map_image.fill((0, 100, 0))
 
-#images
-#myce
-map_image = pygame.image.load('assets/images/myce/myce1.png').convert_alpha()
-#map
-map_image = pygame.image.load('assets/images/maps/teetrex.png').convert_alpha()
-#enemy
-foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
-#myce
+try:
+    foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
+except Exception:
+    foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
+    pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
 
-#load json level stuff
-with(open('tilesheets/teetrex..tmj')) as file:
-    mapspace_data = json.load(file)
+try:
+    cursor_myce = pygame.image.load('assets/images/myce/myce1.png').convert_alpha()
+except Exception:
+    cursor_myce = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
+    pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
+cursor_myce = pygame.transform.scale(cursor_myce, (var.TileSize, var.TileSize))
 
-#create map space (map menu pnding)
-mapspace = MapSpace(mapspace_data,map_image, var.SCREEN_WIDTH, var.SCREEN_HEIGHT)
+# load map data
+try:
+    with open('tilesheets/teetrex..tmj') as f:
+        mapspace_data = json.load(f)
+except Exception:
+    mapspace_data = {'width': 10, 'height': 10, 'layers': []}
+
+# create mapspace
+mapspace = MapSpace(mapspace_data, map_image, var.SCREEN_WIDTH, var.SCREEN_HEIGHT)
 mapspace.objprocess()
 
+# create foe
+try:
+    foe = enemies.Foe(mapspace.wayp, foe_image)
+except Exception:
+    foe = None
 
-
-
-
-foe = enemies.Foe(mapspace.wayp, foe_image)
-print(foe)
-
-#create groups
+# groups
 foe_group = pygame.sprite.Group()
-foe_group.add(foe)
+if foe:
+    foe_group.add(foe)
 myce_group = pygame.sprite.Group()
 
-
-#Player rectangle
-player = pygame.Rect(300, 250, 50, 50)
-
+def spawnmyce():
+    mouse_pos = pygame.mouse.get_pos()
+    mouse_tile_x = mouse_pos[0] // var.TileSize
+    mouse_tile_y = mouse_pos[1] // var.TileSize
+    if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
+        m = Myce(mouse_tile_x, mouse_tile_y, cursor_myce)
+        myce_group.add(m)
+        
 
 # Game loop
 running = True
 while running:
     clock.tick(var.FPS)
-    #fill screen
+
+    # clear
     screen.fill(var.BACKGROUND_COLOR)
 
-    #draw map
+    # draw map
     mapspace.draw(screen)
-    
 
-    #update groups
-    foe_group.update()
-    #draw groups
-    foe_group.draw(screen)
-
-   
-
-    #Exit game
+    # events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        #click
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            mouse_pos = pygame.mouse.get_pos()
-            if mouse_pos [0] > var.SCREEN_WIDTH or mouse_pos[1] > var.SCREEN_HEIGHT:
-                spawnmyce()
- 
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            spawnmyce()
 
-    # Update the display
+    # update
+    foe_group.update()
+    myce_group.update()
+
+    # draw (after map so visible)
+    foe_group.draw(screen)
+    myce_group.draw(screen)
+
     pygame.display.flip()
 
 pygame.quit()
-print("Game closed.")
+print('Game closed.')
