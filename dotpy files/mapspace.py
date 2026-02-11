@@ -1,6 +1,7 @@
 import pygame
 class MapSpace():
     def __init__(self, data, map_image, width, height):
+        self.tilemap = []
         self.wayp = []
         self.width = width
         self.height = height
@@ -19,7 +20,9 @@ class MapSpace():
     def objprocess(self):
         #retrieve waypoints from json data
         for layer in self.mapspace_data['layers']:
-            if layer["name"] == "waypoint":
+            if layer["name"] == "tilemap":
+                self.tilemap = layer["data"]
+            elif layer["name"] == "waypoint":
                 for object in layer["objects"]:
                     obj_x = object.get("x", 0)
                     obj_y = object.get("y", 0)

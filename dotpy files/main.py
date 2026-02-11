@@ -27,7 +27,7 @@ except Exception:
     map_image.fill((0, 100, 0))
 
 try:
-    foe_image = pygame.image.load('assets/images/enemies/foe1.png').convert_alpha()
+    foe_image = pygame.image.load(os.path.join('assets/images/enemies/yarn_boss.gif')).convert_alpha()
 except Exception:
     foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
@@ -66,6 +66,7 @@ def spawnmyce():
     mouse_pos = pygame.mouse.get_pos()
     mouse_tile_x = mouse_pos[0] // var.TileSize
     mouse_tile_y = mouse_pos[1] // var.TileSize
+    #
     if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
         m = Myce(mouse_tile_x, mouse_tile_y, cursor_myce)
         myce_group.add(m)
