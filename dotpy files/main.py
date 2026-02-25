@@ -16,29 +16,31 @@ print(f'Running with {sys.executable}')
 
 pygame.init()
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
+screen = pygame.display.set_mode((var.SCREEN_WIDTH + var.sidebar, var.SCREEN_HEIGHT))
 pygame.display.set_caption("CheeseTD3")
 
 # safe asset loads
+#map
 try:
     map_image = pygame.image.load('assets/images/maps/teetrex.png').convert_alpha()
 except Exception:
     map_image = pygame.Surface((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
     map_image.fill((0, 100, 0))
-
+#boss
 try:
     foe_image = pygame.image.load(os.path.join('assets/images/enemies/yarn_boss.gif')).convert_alpha()
 except Exception:
     foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
-
+#myce
 try:
     cursor_myce = pygame.image.load('assets/images/myce/myce1.png').convert_alpha()
 except Exception:
     cursor_myce = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
 cursor_myce = pygame.transform.scale(cursor_myce, (var.TileSize, var.TileSize))
-
+#buttons
+place_
 # load map data
 try:
     with open('tilesheets/teetrex..tmj') as f:

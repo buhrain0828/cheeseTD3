@@ -1,6 +1,7 @@
 Row = 20
 Column = 20
 TileSize = 32
+sidebar = 300
 SCREEN_WIDTH = TileSize * Column
 SCREEN_HEIGHT = TileSize * Row
 FPS = 60
