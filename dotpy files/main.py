@@ -40,7 +40,7 @@ except Exception:
     pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
 cursor_myce = pygame.transform.scale(cursor_myce, (var.TileSize, var.TileSize))
 #buttons
-place_
+
 # load map data
 try:
     with open('tilesheets/teetrex..tmj') as f:
@@ -72,7 +72,7 @@ def spawnmyce():
     if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
         m = Myce(mouse_tile_x, mouse_tile_y, cursor_myce)
         myce_group.add(m)
-        
+        +
 
 # Game loop
 running = True
