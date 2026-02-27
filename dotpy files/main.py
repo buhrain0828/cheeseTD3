@@ -6,6 +6,7 @@ from mapspace import MapSpace
 from myce import Myce
 import enemies
 import variables as var
+from buttons import Button
 
 # Ensure project root on sys.path for relative asset imports
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +41,9 @@ except Exception:
     pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
 cursor_myce = pygame.transform.scale(cursor_myce, (var.TileSize, var.TileSize))
 #buttons
+place_myce_image = pygame.image.load('assets/images/buttons/place_myce.png').convert_alpha()
+stop_sign_image = pygame.image.load('assets/images/buttons/stop_sign.png').convert_alpha()
+
 
 # load map data
 try:
@@ -63,6 +67,10 @@ foe_group = pygame.sprite.Group()
 if foe:
     foe_group.add(foe)
 myce_group = pygame.sprite.Group()
+myce_button = Button(var.SCREEN_WIDTH + 30, 120, place_myce_image)
+stop_button = Button(var.SCREEN_WIDTH + 50, 180, stop_sign_image)
+
+
 
 def spawnmyce():
     mouse_pos = pygame.mouse.get_pos()
@@ -72,7 +80,6 @@ def spawnmyce():
     if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
         m = Myce(mouse_tile_x, mouse_tile_y, cursor_myce)
         myce_group.add(m)
-        +
 
 # Game loop
 running = True
@@ -99,6 +106,11 @@ while running:
     # draw (after map so visible)
     foe_group.draw(screen)
     myce_group.draw(screen)
+
+    # draw UI buttons
+    myce_button.draw(screen)
+    stop_button.draw(screen)
+
 
     pygame.display.flip()
 
