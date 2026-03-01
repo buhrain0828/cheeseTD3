@@ -41,8 +41,27 @@ except Exception:
     pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
 cursor_myce = pygame.transform.scale(cursor_myce, (var.TileSize, var.TileSize))
 #buttons
+# load button images
 place_myce_image = pygame.image.load('assets/images/buttons/place_myce.png').convert_alpha()
 stop_sign_image = pygame.image.load('assets/images/buttons/stop_sign.png').convert_alpha()
+
+# scale buttons while preserving aspect ratio so they don't look squished
+# target the button height to 2 tiles and allow width to adjust accordingly
+def _scale_preserve_to_height(img, target_h, max_w):
+    w, h = img.get_size()
+    if h == 0 or w == 0:
+        return img
+    scale = target_h / h
+    new_w = int(w * scale)
+    if new_w > max_w:
+        scale = max_w / w
+    new_size = (max(1, int(w * scale)), max(1, int(h * scale)))
+    return pygame.transform.smoothscale(img, new_size)
+
+max_button_height = var.TileSize * 2
+max_button_width = var.sidebar - 20
+place_myce_image = _scale_preserve_to_height(place_myce_image, max_button_height, max_button_width)
+stop_sign_image = _scale_preserve_to_height(stop_sign_image, max_button_height, max_button_width)
 
 
 # load map data
@@ -67,8 +86,12 @@ foe_group = pygame.sprite.Group()
 if foe:
     foe_group.add(foe)
 myce_group = pygame.sprite.Group()
-myce_button = Button(var.SCREEN_WIDTH + 30, 120, place_myce_image)
-stop_button = Button(var.SCREEN_WIDTH + 50, 180, stop_sign_image)
+# center buttons horizontally inside the sidebar using their actual widths
+sidebar_x = var.SCREEN_WIDTH
+myce_x = sidebar_x + (var.sidebar - place_myce_image.get_width()) // 2
+stop_x = sidebar_x + (var.sidebar - stop_sign_image.get_width()) // 2
+myce_button = Button(myce_x, 120, place_myce_image, True)  # one_click=True for toggle behavior
+stop_button = Button(stop_x, 180, stop_sign_image, True)
 
 
 
@@ -83,6 +106,8 @@ def spawnmyce():
 
 # Game loop
 running = True
+# track whether we are in placement mode
+drop_myce = False
 while running:
     clock.tick(var.FPS)
 
@@ -108,8 +133,12 @@ while running:
     myce_group.draw(screen)
 
     # draw UI buttons
-    myce_button.draw(screen)
-    stop_button.draw(screen)
+    if myce_button.draw(screen):
+        drop_myce = True
+    #only show cancel button while myce placement is active
+    if drop_myce == True:
+        if stop_button.draw(screen):
+            drop_myce = False
 
 
     pygame.display.flip()
