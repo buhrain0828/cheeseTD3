@@ -122,7 +122,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            spawnmyce()
+            if drop_myce == True:
+                spawnmyce()
 
     # update
     foe_group.update()
@@ -137,6 +138,12 @@ while running:
         drop_myce = True
     #only show cancel button while myce placement is active
     if drop_myce == True:
+        #current myce being placed follows cursor
+        cursor_rect = cursor_myce.get_rect()
+        cursor_pos = pygame.mouse.get_pos()
+        cursor_rect.center = cursor_pos
+        if cursor_pos[0] <= var.SCREEN_WIDTH:
+           screen.blit(cursor_myce, cursor_rect)
         if stop_button.draw(screen):
             drop_myce = False
 
