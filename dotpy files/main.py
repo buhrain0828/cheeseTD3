@@ -35,7 +35,7 @@ except Exception:
     pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
 #myce
 try:
-    cursor_myce = pygame.image.load('assets/images/myce/myce1.png').convert_alpha()
+    cursor_myce = pygame.image.load('assets/images/myce/sprites/myce1.png').convert_alpha()
 except Exception:
     cursor_myce = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.circle(cursor_myce, (255, 255, 0), (var.TileSize//2, var.TileSize//2), var.TileSize//2)
