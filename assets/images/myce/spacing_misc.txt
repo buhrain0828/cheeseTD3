@@ -1,0 +1,5 @@
+pumpkyce spacing: 316px
+myce1 spacing: 325px
+moneymyce spacing: 316px
+lumbermyce spacing: 320px
+total size of each spritesheet: 2760 x 826 px
