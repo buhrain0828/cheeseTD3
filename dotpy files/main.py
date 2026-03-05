@@ -33,6 +33,8 @@ try:
 except Exception:
     foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
+#myce spritesheet
+myce1sheet = pygame.image.load('assets/images/myce/sheets/myce1_shooting_spritesheet.png').convert_alpha
 #myce
 try:
     cursor_myce = pygame.image.load('assets/images/myce/sprites/myce1.png').convert_alpha()
@@ -101,7 +103,7 @@ def spawnmyce():
     mouse_tile_y = mouse_pos[1] // var.TileSize
     #
     if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
-        m = Myce(mouse_tile_x, mouse_tile_y, cursor_myce)
+        m = Myce(mouse_tile_x, mouse_tile_y, myce1sheet)
         myce_group.add(m)
 
 # Game loop
