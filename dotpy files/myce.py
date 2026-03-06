@@ -5,6 +5,8 @@ class Myce(pygame.sprite.Sprite):
     def __init__(self, tile_x, tile_y, sprite_sheet, screen_x=None, screen_y=None,
                  frame_width=446, frame_height=827, spacing=323, num_frames=4, target_width=160):
         pygame.sprite.Sprite.__init__(self)
+        self.cooldown = 1500
+        self.last_shot_time = pygame.time.get_ticks()
 
         # tile coords
         self.tile_x = tile_x
@@ -44,7 +46,9 @@ class Myce(pygame.sprite.Sprite):
             animatelist.append(scaled_img)
         return animatelist
     def update(self):
-        self.animate()
+        #automatically clip to next target
+        if pygame.time.get_ticks() - self.last_shot_time > self.cooldown:
+            self.animate()
 
     def animate(self):
         #update img
@@ -56,3 +60,5 @@ class Myce(pygame.sprite.Sprite):
             #check to reset frame
             if self.frame_indx >= len(self.animatelist):
                 self.frame_indx = 0
+            #completed animation, reset cooldown
+            self.last_shot_time = pygame.time.get_ticks()
