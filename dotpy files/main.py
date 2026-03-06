@@ -131,7 +131,7 @@ def spawnmyce():
         if dx*dx + dy*dy <= var.TileSize * var.TileSize:
             return
 
-    m = Myce(tx, ty, myce1sheet, screen_x=mx, screen_y=my, target_width=80)
+    m = Myce(tx, ty, myce1sheet, screen_x=mx, screen_y=my, target_width=60)
     # ensure the sprite doesn't overlap the sidebar area
     if m.rect.right > var.SCREEN_WIDTH:
         m.rect.right = var.SCREEN_WIDTH

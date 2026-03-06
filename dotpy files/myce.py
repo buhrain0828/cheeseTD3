@@ -6,7 +6,7 @@ class Myce(pygame.sprite.Sprite):
                  frame_width=446, frame_height=827, spacing=323, num_frames=4, target_width=160):
         pygame.sprite.Sprite.__init__(self)
 
-        # keep tile coordinates for game logic; lazily updated if screen coords provided
+        # tile coords
         self.tile_x = tile_x
         self.tile_y = tile_y
 

@@ -9,4 +9,4 @@ BACKGROUND_COLOR = (240, 230, 140)  # light goldenrod (RGB)
 GREY0 = (60, 60, 60)
 #myce stats
 #myce animations
-time_delay = 200
+time_delay = 30
