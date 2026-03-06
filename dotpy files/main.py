@@ -14,6 +14,8 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 print(f'Running with {sys.executable}')
+#selection variables
+select_myce = False
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -103,7 +105,7 @@ def spawnmyce():
     if not (0 <= mx < var.SCREEN_WIDTH and 0 <= my < var.SCREEN_HEIGHT):
         return
 
-    # compute tile coordinates using the scaled map dimensions
+    # compute tile coordinates using scaled map dimensions
     tile_w = mapspace.width / mapspace.orig_width if mapspace.orig_width else var.TileSize
     tile_h = mapspace.height / mapspace.orig_height if mapspace.orig_height else var.TileSize
     tx = int(mx // tile_w)
@@ -132,17 +134,19 @@ def spawnmyce():
             return
 
     m = Myce(tx, ty, myce1sheet, screen_x=mx, screen_y=my, target_width=60)
-    # ensure the sprite doesn't overlap the sidebar area
+    #sprite doesn't overlap the sidebar area
     if m.rect.right > var.SCREEN_WIDTH:
         m.rect.right = var.SCREEN_WIDTH
         m.x = m.rect.centerx
-    # similarly guard left edge (shouldn't trigger normally)
+    #similarly guard left edge (shouldn't trigger normally)
     if m.rect.left < 0:
         m.rect.left = 0
         m.x = m.rect.centerx
     myce_group.add(m)
 
-
+def check_selection(mouse_pos):
+    mouse_tile_x = mouse_pos[0] // var.TileSize
+    mouse_tile_y = mouse_pos[1] // var.TileSize
 # Game loop
 running = True
 # track whether we are in placement mode
@@ -170,7 +174,8 @@ while running:
 
     # draw (after map so visible)
     foe_group.draw(screen)
-    myce_group.draw(screen)
+    for myce in myce_group:
+        myce.draw_range(screen)
 
     # draw UI buttons
     if myce_button.draw(screen):

@@ -6,7 +6,9 @@ class Myce(pygame.sprite.Sprite):
                  frame_width=446, frame_height=827, spacing=323, num_frames=4, target_width=160):
         pygame.sprite.Sprite.__init__(self)
         self.cooldown = var.cooldown
-        self.last_shot_time = pygame.time.get_ticks()
+        self.last_shot_time = pygame.time.get_ticks()#
+        self.range = 50
+        self.select = False
 
         # tile coords
         self.tile_x = tile_x
@@ -25,10 +27,18 @@ class Myce(pygame.sprite.Sprite):
         self.animatelist = self.imageload(frame_width, frame_height, spacing, num_frames, target_width)
         self.frame_indx = 0
         self.time_stamp = pygame.time.get_ticks()
-
+        #image
         self.image = self.animatelist[self.frame_indx]
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+        #range circle
+        self.range_image = pygame.Surface((self.range*2, self.range*2))
+        self.range_image.fill((0, 0, 0,))
+        self.range_image.set_colorkey((0, 0, 0))
+        pygame.draw.circle(self.range_image, "grey100", (self.range, self.range), self.range )
+        self.range_image.set_alpha(75)
+        self.range_rect = self.range_image.get_rect()
+        self.range_rect.center = (self.x, self.y)
 
     def imageload(self, frame_width, frame_height, spacing, num_frames, target_width):
         # extract each frame from the spritesheet, accounting for spacing between frames
@@ -63,3 +73,8 @@ class Myce(pygame.sprite.Sprite):
                 self.frame_indx = 0
             #completed animation, reset cooldown
                 self.last_shot_time = pygame.time.get_ticks()
+    
+    def draw_range(self, surface):
+        surface.blit(self.image, self.rect)
+        if self.select:
+            surface.blit(self.range_image, self.range_rect)
