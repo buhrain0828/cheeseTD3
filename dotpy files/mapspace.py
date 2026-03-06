@@ -18,17 +18,20 @@ class MapSpace():
         surface.blit(self.image, (0, 0))
         
     def objprocess(self):
-        #retrieve waypoints from json data
-        for layer in self.mapspace_data['layers']:
-            if layer["name"] == "tilemap":
-                self.tilemap = layer["data"]
-            elif layer["name"] == "waypoint":
-                for object in layer["objects"]:
-                    obj_x = object.get("x", 0)
-                    obj_y = object.get("y", 0)
-                    wayp_data = object.get("polyline", [])
+        # retrieve waypoints and tile data from json layers
+        for layer in self.mapspace_data.get('layers', []):
+            lname = layer.get('name', '')
+            ltype = layer.get('type', '')
+            # if it's a tile layer, grab its data regardless of the name
+            if ltype == 'tilelayer':
+                self.tilemap = layer.get('data', [])
+            elif lname == 'waypoint' or ltype == 'objectgroup':
+                for obj in layer.get('objects', []):
+                    obj_x = obj.get('x', 0)
+                    obj_y = obj.get('y', 0)
+                    wayp_data = obj.get('polyline', [])
                     self.wayp_process(wayp_data, obj_x, obj_y)
-                    
+
     def wayp_process(self, data, obj_x, obj_y):
         #find x and y coords and apply object offset and scaling
         for point in data:

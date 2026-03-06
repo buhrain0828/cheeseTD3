@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "print spawnmyce",
+			"type": "shell",
+			"command": "python - <<'PYTHON'\nimport inspect\nfrom dotpy import main\nprint(inspect.getsource(main.spawnmyce))\nPYTHON",
+			"isBackground": false
+		}
+	]
+}

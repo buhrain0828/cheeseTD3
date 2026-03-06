@@ -98,12 +98,50 @@ stop_button = Button(stop_x, 180, stop_sign_image, True)
 
 
 def spawnmyce():
-    mouse_pos = pygame.mouse.get_pos()
-    mouse_tile_x = mouse_pos[0] // var.TileSize
-    mouse_tile_y = mouse_pos[1] // var.TileSize
-    if 0 <= mouse_pos[0] < var.SCREEN_WIDTH and 0 <= mouse_pos[1] < var.SCREEN_HEIGHT:
-        m = Myce(mouse_tile_x, mouse_tile_y, myce1sheet)
-        myce_group.add(m)
+    mx, my = pygame.mouse.get_pos()
+    # only handle clicks inside the map area
+    if not (0 <= mx < var.SCREEN_WIDTH and 0 <= my < var.SCREEN_HEIGHT):
+        return
+
+    # compute tile coordinates using the scaled map dimensions
+    tile_w = mapspace.width / mapspace.orig_width if mapspace.orig_width else var.TileSize
+    tile_h = mapspace.height / mapspace.orig_height if mapspace.orig_height else var.TileSize
+    tx = int(mx // tile_w)
+    ty = int(my // tile_h)
+
+    cols = mapspace.orig_width or var.Column
+    # quick bounds check
+    if tx < 0 or tx >= cols or ty < 0 or ty >= (mapspace.orig_height or var.Row):
+        return
+
+    if not mapspace.tilemap:
+        return
+    idx = ty * cols + tx
+    if idx >= len(mapspace.tilemap):
+        return
+
+    # only allow placement on grass
+    if mapspace.tilemap[idx] != 142:
+        return
+
+    # avoid spawning too near an existing myce
+    for existing in myce_group:
+        dx = existing.rect.centerx - mx
+        dy = existing.rect.centery - my
+        if dx*dx + dy*dy <= var.TileSize * var.TileSize:
+            return
+
+    m = Myce(tx, ty, myce1sheet, screen_x=mx, screen_y=my, target_width=80)
+    # ensure the sprite doesn't overlap the sidebar area
+    if m.rect.right > var.SCREEN_WIDTH:
+        m.rect.right = var.SCREEN_WIDTH
+        m.x = m.rect.centerx
+    # similarly guard left edge (shouldn't trigger normally)
+    if m.rect.left < 0:
+        m.rect.left = 0
+        m.x = m.rect.centerx
+    myce_group.add(m)
+
 
 # Game loop
 running = True
@@ -123,7 +161,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if drop_myce == True:
+            if drop_myce:
                 spawnmyce()
 
     # update
