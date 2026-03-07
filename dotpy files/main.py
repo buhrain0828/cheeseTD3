@@ -40,7 +40,6 @@ try:
         "insane": pygame.image.load(os.path.join('assets/images/enemies/pink_cat_enemy.png')).convert_alpha(),
         "demon": pygame.image.load(os.path.join('assets/images/enemies/white_cat_enemy.png')).convert_alpha()
     }
-    foe_image = pygame.image.load(os.path.join('assets/images/enemies/black_cat_enemy.png')).convert_alpha()
     foe_image = pygame.transform.scale(foe_image,(64,64))
 except Exception:
     foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
