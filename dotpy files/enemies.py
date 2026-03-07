@@ -14,12 +14,9 @@ class Foe(pygame.sprite.Sprite):
         self.speed = 1
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
-        #animation attributes
-        self.frame_indx = 0
-        self.time_stamp = pygame.time.get_ticks()
+        
     def update(self):
         self.move()
-        self.rotate()
 
     def move(self):
         #target waypoint
@@ -40,13 +37,6 @@ class Foe(pygame.sprite.Sprite):
                 self.pos += self.movement.normalize() * distance
             self.target_waypoint += 1
         self.rect.center = self.pos
-    def rotate(self):
-        distance = self.target - self.pos
-        #use dist to calculate angle
-        self.angle = math.degrees(math.atan2(distance[1], distance[0]))
-        #rotate img
-        self.image = pygame.transform.rotate(self.orgimage, self.angle)
-        self.rect = self.image.get_rect()
-        self.rect.center = self.pos
-    def animate_enemy(self)
+
+
     

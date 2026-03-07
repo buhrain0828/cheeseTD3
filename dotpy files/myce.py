@@ -1,5 +1,6 @@
 import pygame
 import variables as var
+import math
 
 class Myce(pygame.sprite.Sprite):
     def __init__(self, tile_x, tile_y, sprite_sheet, screen_x=None, screen_y=None,
@@ -7,8 +8,9 @@ class Myce(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.cooldown = var.cooldown
         self.last_shot_time = pygame.time.get_ticks()#
-        self.range = 50
+        self.range = 150
         self.select = False
+        self.active_target = None
 
         # tile coords
         self.tile_x = tile_x
@@ -28,7 +30,9 @@ class Myce(pygame.sprite.Sprite):
         self.frame_indx = 0
         self.time_stamp = pygame.time.get_ticks()
         #image
-        self.image = self.animatelist[self.frame_indx]
+        self.angle = 90
+        self.orgimage = self.animatelist[self.frame_indx]
+        self.image = pygame.transform.rotate(self.orgimage, self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
         #range circle
@@ -56,14 +60,35 @@ class Myce(pygame.sprite.Sprite):
             animatelist.append(scaled_img)
         return animatelist
 
-    def update(self):
-        #automatically clip to next target
-        if pygame.time.get_ticks() - self.last_shot_time > self.cooldown:
+    def update(self, foe_group):
+        #only animate if target visible
+        if self.active_target:
             self.animate()
+        else:
+
+            #automatically clip to next target
+            if pygame.time.get_ticks() - self.last_shot_time > self.cooldown:
+                self.turn_to_target(foe_group)
+
+    
+    def turn_to_target(self, foe_group):
+        #seek nearest target in range of myce
+        dist_x = 0
+        dist_y = 0
+        #check the distance to next target
+        for foe in foe_group:
+            dist_x = foe.pos[0] - self.x
+            dist_y = foe.pos[1] - self.y
+            dist_e = math.sqrt(dist_x**2 + dist_y**2)
+            if dist_e < self.range:
+                self.active_target = foe
+                self.angle = math.degrees(math.atan2(-dist_y, dist_x))
+            
+
 
     def animate(self):
         #update img
-        self.image = self.animatelist[self.frame_indx]
+        self.orgimage = self.animatelist[self.frame_indx]
         #has enough time passed from update?
         if pygame.time.get_ticks() - self.time_stamp > var.time_delay:
             self.time_stamp = pygame.time.get_ticks()
@@ -73,8 +98,15 @@ class Myce(pygame.sprite.Sprite):
                 self.frame_indx = 0
             #completed animation, reset cooldown
                 self.last_shot_time = pygame.time.get_ticks()
+                self.active_target = None
     
     def draw_range(self, surface):
+        self.image = pygame.transform.rotate(self.orgimage, self.angle - 90)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
         surface.blit(self.image, self.rect)
         if self.select:
             surface.blit(self.range_image, self.range_rect)
+
+#class MoneyMyce(Myce):
+

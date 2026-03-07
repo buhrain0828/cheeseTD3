@@ -15,7 +15,8 @@ if PROJECT_ROOT not in sys.path:
 
 print(f'Running with {sys.executable}')
 #selection variables
-select_myce = False
+# currently selected myce, if any
+selected_myce = None
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -31,7 +32,16 @@ except Exception:
     map_image.fill((0, 100, 0))
 #boss
 try:
-    foe_image = pygame.image.load(os.path.join('assets/images/enemies/yarn_boss.gif')).convert_alpha()
+    foe_types = {
+        "easy": pygame.image.load(os.path.join('assets/images/enemies/black_cat_enemy.png')).convert_alpha(),
+        "normal": pygame.image.load(os.path.join('assets/images/enemies/brown_cat_enemy.png')).convert_alpha(),
+        "hard": pygame.image.load(os.path.join('assets/images/enemies/beige_cat_enemy.png')).convert_alpha(),
+        "harder": pygame.image.load(os.path.join('assets/images/enemies/blue_cat_enemy.png')).convert_alpha(),
+        "insane": pygame.image.load(os.path.join('assets/images/enemies/pink_cat_enemy.png')).convert_alpha(),
+        "demon": pygame.image.load(os.path.join('assets/images/enemies/white_cat_enemy.png')).convert_alpha()
+    }
+    foe_image = pygame.image.load(os.path.join('assets/images/enemies/black_cat_enemy.png')).convert_alpha()
+    foe_image = pygame.transform.scale(foe_image,(64,64))
 except Exception:
     foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
     pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
@@ -94,58 +104,74 @@ myce_group = pygame.sprite.Group()
 sidebar_x = var.SCREEN_WIDTH
 myce_x = sidebar_x + (var.sidebar - place_myce_image.get_width()) // 2
 stop_x = sidebar_x + (var.sidebar - stop_sign_image.get_width()) // 2
+
+#initialise buttons
 myce_button = Button(myce_x, 120, place_myce_image, True)  # one_click=True for toggle behavior
 stop_button = Button(stop_x, 180, stop_sign_image, True)
 
 
 
 def spawnmyce():
-    mx, my = pygame.mouse.get_pos()
+    mouse_x, mouse_y = pygame.mouse.get_pos()
     # only handle clicks inside the map area
-    if not (0 <= mx < var.SCREEN_WIDTH and 0 <= my < var.SCREEN_HEIGHT):
+    if not (0 <= mouse_x < var.SCREEN_WIDTH and 0 <= mouse_y < var.SCREEN_HEIGHT):
         return
 
     # compute tile coordinates using scaled map dimensions
-    tile_w = mapspace.width / mapspace.orig_width if mapspace.orig_width else var.TileSize
-    tile_h = mapspace.height / mapspace.orig_height if mapspace.orig_height else var.TileSize
-    mouse_tile = (int(mx // tile_w), int(my // tile_h))
-    mouse_tile_x, mouse_tile_y = mouse_tile
+    tile_width = mapspace.width / mapspace.orig_width if mapspace.orig_width else var.TileSize
+    tile_height = mapspace.height / mapspace.orig_height if mapspace.orig_height else var.TileSize
+    clicked_tile = (int(mouse_x // tile_width), int(mouse_y // tile_height))
+    clicked_tile_x, clicked_tile_y = clicked_tile
 
-    cols = mapspace.orig_width or var.Column
+    map_columns = mapspace.orig_width or var.Column
+    map_rows = mapspace.orig_height or var.Row
     # quick bounds check
-    if mouse_tile_x < 0 or mouse_tile_x >= cols or mouse_tile_y < 0 or mouse_tile_y >= (mapspace.orig_height or var.Row):
+    if clicked_tile_x < 0 or clicked_tile_x >= map_columns or clicked_tile_y < 0 or clicked_tile_y >= map_rows:
         return
 
     if not mapspace.tilemap:
         return
-    idx = mouse_tile_y * cols + mouse_tile_x
-    if idx >= len(mapspace.tilemap):
+    tile_index = clicked_tile_y * map_columns + clicked_tile_x
+    if tile_index >= len(mapspace.tilemap):
         return
 
     # only allow placement on grass
-    if mapspace.tilemap[idx] != 142:
+    if mapspace.tilemap[tile_index] != 142:
         return
 
     # avoid spawning too near an existing myce (by tile)
-    for existing in myce_group:
-        myce_tile = (getattr(existing, 'tile_x', None), getattr(existing, 'tile_y', None))
-        if myce_tile == mouse_tile:
+    for existing_myce in myce_group:
+        existing_tile = (getattr(existing_myce, 'tile_x', None), getattr(existing_myce, 'tile_y', None))
+        if existing_tile == clicked_tile:
             return
 
-    m = Myce(mouse_tile_x, mouse_tile_y, myce1sheet, screen_x=mx, screen_y=my, target_width=60)
+    new_myce = Myce(clicked_tile_x, clicked_tile_y, myce1sheet, screen_x=mouse_x, screen_y=mouse_y, target_width=60)
     #sprite doesn't overlap the sidebar area
-    if m.rect.right > var.SCREEN_WIDTH:
-        m.rect.right = var.SCREEN_WIDTH
-        m.x = m.rect.centerx
+    if new_myce.rect.right > var.SCREEN_WIDTH:
+        new_myce.rect.right = var.SCREEN_WIDTH
+        new_myce.x = new_myce.rect.centerx
     #similarly guard left edge (shouldn't trigger normally)
-    if m.rect.left < 0:
-        m.rect.left = 0
-        m.x = m.rect.centerx
-    myce_group.add(m)
+    if new_myce.rect.left < 0:
+        new_myce.rect.left = 0
+        new_myce.x = new_myce.rect.centerx
+    myce_group.add(new_myce)
 
 def check_selection(mouse_pos):
-    mouse_tile_x = mouse_pos[0] // var.TileSize
-    mouse_tile_y = mouse_pos[1] // var.TileSize
+    # return the myce the player clicked on
+    for myce in myce_group:
+        if myce.rect.collidepoint(mouse_pos):
+            return myce
+    return None
+
+
+def set_selected_myce(clicked_myce):
+    global selected_myce
+
+    # only one myce should show its range at a time
+    selected_myce = clicked_myce
+    for myce in myce_group:
+        myce.select = myce is clicked_myce
+
 # Game loop
 running = True
 # track whether we are in placement mode
@@ -166,10 +192,13 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if drop_myce:
                 spawnmyce()
+            elif event.pos[0] < var.SCREEN_WIDTH:
+                # click a myce to show range, click empty map space to clear
+                set_selected_myce(check_selection(event.pos))
 
     # update
     foe_group.update()
-    myce_group.update()
+    myce_group.update(foe_group)
 
     # draw (after map so visible)
     foe_group.draw(screen)
@@ -187,6 +216,7 @@ while running:
         cursor_rect.center = cursor_pos
         if cursor_pos[0] <= var.SCREEN_WIDTH:
            screen.blit(cursor_myce, cursor_rect)
+        
         if stop_button.draw(screen):
             drop_myce = False
 
@@ -195,3 +225,4 @@ while running:
 
 pygame.quit()
 print('Game closed.')
+
