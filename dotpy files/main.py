@@ -108,17 +108,17 @@ def spawnmyce():
     # compute tile coordinates using scaled map dimensions
     tile_w = mapspace.width / mapspace.orig_width if mapspace.orig_width else var.TileSize
     tile_h = mapspace.height / mapspace.orig_height if mapspace.orig_height else var.TileSize
-    tx = int(mx // tile_w)
-    ty = int(my // tile_h)
+    mouse_tile = (int(mx // tile_w), int(my // tile_h))
+    mouse_tile_x, mouse_tile_y = mouse_tile
 
     cols = mapspace.orig_width or var.Column
     # quick bounds check
-    if tx < 0 or tx >= cols or ty < 0 or ty >= (mapspace.orig_height or var.Row):
+    if mouse_tile_x < 0 or mouse_tile_x >= cols or mouse_tile_y < 0 or mouse_tile_y >= (mapspace.orig_height or var.Row):
         return
 
     if not mapspace.tilemap:
         return
-    idx = ty * cols + tx
+    idx = mouse_tile_y * cols + mouse_tile_x
     if idx >= len(mapspace.tilemap):
         return
 
@@ -126,14 +126,13 @@ def spawnmyce():
     if mapspace.tilemap[idx] != 142:
         return
 
-    # avoid spawning too near an existing myce
+    # avoid spawning too near an existing myce (by tile)
     for existing in myce_group:
-        dx = existing.rect.centerx - mx
-        dy = existing.rect.centery - my
-        if dx*dx + dy*dy <= var.TileSize * var.TileSize:
+        myce_tile = (getattr(existing, 'tile_x', None), getattr(existing, 'tile_y', None))
+        if myce_tile == mouse_tile:
             return
 
-    m = Myce(tx, ty, myce1sheet, screen_x=mx, screen_y=my, target_width=60)
+    m = Myce(mouse_tile_x, mouse_tile_y, myce1sheet, screen_x=mx, screen_y=my, target_width=60)
     #sprite doesn't overlap the sidebar area
     if m.rect.right > var.SCREEN_WIDTH:
         m.rect.right = var.SCREEN_WIDTH

@@ -14,6 +14,9 @@ class Foe(pygame.sprite.Sprite):
         self.speed = 1
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
+        #animation attributes
+        self.frame_indx = 0
+        self.time_stamp = pygame.time.get_ticks()
     def update(self):
         self.move()
         self.rotate()
@@ -45,5 +48,5 @@ class Foe(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.orgimage, self.angle)
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
-
+    def animate_enemy(self)
     
