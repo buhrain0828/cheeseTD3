@@ -25,7 +25,6 @@ class MapSpace():
         foes = FOE_SPAWN_DATA[self.round - 1]
         for foe_type in foes:
             foes_to_spawn = foes[foe_type]
-            print(foes_to_spawn)
             for foe in range(foes_to_spawn):
                 self.foe_list.append(foe_type)
     def objprocess(self):
