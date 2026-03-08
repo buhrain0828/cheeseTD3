@@ -1,17 +1,20 @@
 import pygame
 from pygame.math import Vector2
 import math
+
+from allfoedata import FOE_DATA
 class Foe(pygame.sprite.Sprite):
-    def __init__(self, waypoint, image):
+    def __init__(self, foe_type,waypoint, images):
         pygame.sprite.Sprite.__init__(self)
         self.waypoint = waypoint
         self.pos = Vector2(self.waypoint[0])
         self.target_waypoint = 1
-        self.orgimage = image
+        self.orgimage = images.get(foe_type)
         # initial angle must be set before rotating the image
         self.angle = 0
         self.image = pygame.transform.rotate(self.orgimage, self.angle)
-        self.speed = 1
+        self.health = FOE_DATA.get(foe_type)["health"]
+        self.speed = FOE_DATA.get(foe_type)["speed"]
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         

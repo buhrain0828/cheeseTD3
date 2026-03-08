@@ -31,19 +31,22 @@ except Exception:
     map_image = pygame.Surface((var.SCREEN_WIDTH, var.SCREEN_HEIGHT))
     map_image.fill((0, 100, 0))
 #boss
-try:
-    foe_types = {
-        "easy": pygame.image.load(os.path.join('assets/images/enemies/black_cat_enemy.png')).convert_alpha(),
-        "normal": pygame.image.load(os.path.join('assets/images/enemies/brown_cat_enemy.png')).convert_alpha(),
-        "hard": pygame.image.load(os.path.join('assets/images/enemies/beige_cat_enemy.png')).convert_alpha(),
-        "harder": pygame.image.load(os.path.join('assets/images/enemies/blue_cat_enemy.png')).convert_alpha(),
-        "insane": pygame.image.load(os.path.join('assets/images/enemies/pink_cat_enemy.png')).convert_alpha(),
-        "demon": pygame.image.load(os.path.join('assets/images/enemies/white_cat_enemy.png')).convert_alpha()
-    }
-    foe_image = pygame.transform.scale(foe_image,(64,64))
-except Exception:
-    foe_image = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
-    pygame.draw.rect(foe_image, (255, 0, 0), foe_image.get_rect())
+foe_images = {}
+for foe_name, foe_path in {
+    "easy": 'assets/images/enemies/black_cat_enemy.png',
+    "normal": 'assets/images/enemies/brown_cat_enemy.png',
+    "hard": 'assets/images/enemies/beige_cat_enemy.png',
+    "harder": 'assets/images/enemies/blue_cat_enemy.png',
+    "insane": 'assets/images/enemies/pink_cat_enemy.png',
+    "demon": 'assets/images/enemies/white_cat_enemy.png',
+}.items():
+    try:
+        foe_surface = pygame.image.load(os.path.join(foe_path)).convert_alpha()
+        foe_images[foe_name] = pygame.transform.scale(foe_surface, (64, 64))
+    except Exception:
+        foe_surface = pygame.Surface((var.TileSize, var.TileSize), pygame.SRCALPHA)
+        pygame.draw.rect(foe_surface, (255, 0, 0), foe_surface.get_rect())
+        foe_images[foe_name] = foe_surface
 #myce spritesheet
 myce1sheet = pygame.image.load('assets/images/myce/sheets/myce1_shooting_spritesheet.png').convert_alpha()
 #myce cursor image
@@ -84,17 +87,14 @@ try:
 except Exception:
     mapspace_data = {'width': 10, 'height': 10, 'layers': []}
 
+
 # create mapspace
 mapspace = MapSpace(mapspace_data, map_image, var.SCREEN_WIDTH, var.SCREEN_HEIGHT)
 mapspace.objprocess()
-
-# create foe
-try:
-    foe = enemies.Foe(mapspace.wayp, foe_image)
-except Exception:
-    foe = None
-
+mapspace.process_spawn()
 # groups
+foe_type = "easy"
+foe = enemies.Foe(foe_type, mapspace.wayp, foe_images)
 foe_group = pygame.sprite.Group()
 if foe:
     foe_group.add(foe)
