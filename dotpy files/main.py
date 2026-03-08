@@ -17,6 +17,8 @@ print(f'Running with {sys.executable}')
 #selection variables
 # currently selected myce, if any
 selected_myce = None
+last_spawn_time = pygame.time.get_ticks()
+
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -93,11 +95,7 @@ mapspace = MapSpace(mapspace_data, map_image, var.SCREEN_WIDTH, var.SCREEN_HEIGH
 mapspace.objprocess()
 mapspace.process_spawn()
 # groups
-foe_type = "easy"
-foe = enemies.Foe(foe_type, mapspace.wayp, foe_images)
 foe_group = pygame.sprite.Group()
-if foe:
-    foe_group.add(foe)
 myce_group = pygame.sprite.Group()
 # center buttons horizontally inside the sidebar using their actual widths
 sidebar_x = var.SCREEN_WIDTH
@@ -203,6 +201,15 @@ while running:
     foe_group.draw(screen)
     for myce in myce_group:
         myce.draw_range(screen)
+    
+    #spawn foes
+    if pygame.time.get_ticks() - last_spawn_time > var.time_between_spawn:
+        if mapspace.foes_spawned >= len(mapspace.foe_list):
+        foe_type = mapspace.foe_list[mapspace.foes_spawned]
+        foe = enemies.Foe(foe_type, mapspace.wayp, foe_images)
+        foe_group.add(foe)
+        mapspace.foes_spawned += 1
+        last_spawn_time = pygame.time.get_ticks()
 
     # draw UI buttons
     if myce_button.draw(screen):
