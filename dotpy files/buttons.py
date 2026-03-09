@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 
 class Button():
     def __init__(self, xpos, ypos, image, one_click):
@@ -10,13 +10,12 @@ class Button():
 
     def draw(self, surface):
         #draw button and handle click
-        #action on click
         active = False
 
-        # mouse position
+        #mouse position
         pos = pygame.mouse.get_pos()
 
-        # click condition (placeholder for future behavior)
+        #click condition
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1 and self.click == False:
                 active = True
@@ -27,6 +26,6 @@ class Button():
             if pygame.mouse.get_pressed()[0] == 0:
                 self.click = False
 
-        # draw button image
+        #draw button image
         surface.blit(self.image, self.rect)
         return active

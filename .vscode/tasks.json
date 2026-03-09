@@ -6,6 +6,15 @@
 			"type": "shell",
 			"command": "python - <<'PYTHON'\nimport inspect\nfrom dotpy import main\nprint(inspect.getsource(main.spawnmyce))\nPYTHON",
 			"isBackground": false
+		},
+		{
+			"label": "run cheeseTD3",
+			"type": "shell",
+			"command": "c:/Users/osabr/OneDrive/Documents/GitHub/cheeseTD3/.venv/Scripts/python.exe",
+			"args": [
+				"dotpy files/main.py"
+			],
+			"isBackground": true
 		}
 	]
 }

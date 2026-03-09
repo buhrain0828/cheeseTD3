@@ -1,6 +1,7 @@
 import pygame
 from allfoedata import FOE_SPAWN_DATA
 import variables as var
+
 class MapSpace():
     def __init__(self, data, map_image, width, height):
         self.tilemap = []
@@ -9,10 +10,10 @@ class MapSpace():
         self.height = height
         self.image = pygame.transform.scale(map_image, (width, height))
         self.mapspace_data = data
-        # Get original map dimensions from the data
+        #get original map dimensions from data
         self.orig_width = data.get('width', 1)
         self.orig_height = data.get('height', 1)
-        # Calculate scale factor
+        #calculate scale factor
         self.scale_x = width / (self.orig_width * data.get('tilewidth', 1))
         self.scale_y = height / (self.orig_height * data.get('tileheight', 1))
         self.round = 1
@@ -22,6 +23,7 @@ class MapSpace():
         self.foes_killed = 0
         self.foes_spawned = 0
         self.foes_missed = 0
+        self.game_speed = 1
         
     def draw(self, surface):
         surface.blit(self.image, (0, 0))
@@ -43,13 +45,14 @@ class MapSpace():
         self.foes_killed = 0
         self.foes_missed = 0
         self.foes_spawned = 0
+        self.game_speed = 1
 
     def objprocess(self):
-        # retrieve waypoints and tile data from json layers
+        #retrieve waypoints and tile data from json layers
         for layer in self.mapspace_data.get('layers', []):
             lname = layer.get('name', '')
             ltype = layer.get('type', '')
-            # if it's a tile layer, grab its data regardless of the name
+            #if it's a tile layer grab its data regardless of name
             if ltype == 'tilelayer':
                 self.tilemap = layer.get('data', [])
             elif lname == 'waypoint' or ltype == 'objectgroup':

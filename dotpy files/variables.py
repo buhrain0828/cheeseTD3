@@ -14,10 +14,8 @@ health = 100
 quesos = 800
 #enemies
 time_between_spawn = 2000
-#myce 
-cost_buy = 200
-dmg = 5
-quesoperkill = 5
+
+quesoperkill = 10
 quesoper_roundend = 150
 #myce animations
 time_delay = 30
