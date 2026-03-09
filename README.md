@@ -10,4 +10,7 @@ CheeseTD3 is the complete opposite of an innovative tower defence including 1.5 
 ========================
        DOWNLOADS
 ========================
-download as a zip file. extract; exe file is in cheeseTD3/dist
+
+
+
+download as a zip file. extract; exe file is in cheeseTD3-main/dist/cheeseTD3
