@@ -1,14 +1,14 @@
 import pygame
 import variables as var
 import math
-
+import enemies
 class Myce(pygame.sprite.Sprite):
     def __init__(self, tile_x, tile_y, sprite_sheet, screen_x=None, screen_y=None,
                  frame_width=446, frame_height=827, spacing=323, num_frames=4, target_width=160):
         pygame.sprite.Sprite.__init__(self)
         self.cooldown = var.cooldown
         self.last_shot_time = pygame.time.get_ticks()#
-        self.range = 150
+        self.range = 100
         self.select = False
         self.active_target = None
 
@@ -72,17 +72,20 @@ class Myce(pygame.sprite.Sprite):
 
     
     def turn_to_target(self, foe_group):
-        #seek nearest target in range of myce
+           #seek nearest target in range of myce
         dist_x = 0
         dist_y = 0
         #check the distance to next target
         for foe in foe_group:
-            dist_x = foe.pos[0] - self.x
-            dist_y = foe.pos[1] - self.y
-            dist_e = math.sqrt(dist_x**2 + dist_y**2)
-            if dist_e < self.range:
-                self.active_target = foe
-                self.angle = math.degrees(math.atan2(-dist_y, dist_x))
+            if foe.health > 0:
+                dist_x = foe.pos[0] - self.x
+                dist_y = foe.pos[1] - self.y
+                dist_e = math.sqrt(dist_x**2 + dist_y**2)
+                if dist_e < self.range:
+                    self.active_target = foe
+                    self.angle = math.degrees(math.atan2(-dist_y, dist_x))
+                    self.active_target.health -= var.dmg
+                    break
             
 
 

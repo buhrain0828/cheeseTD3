@@ -1,7 +1,7 @@
 FOE_SPAWN_DATA = [
     {
         #1
-        "easy": 15,
+        "easy": 10,
         "medium": 0,
         "hard": 0,
         "harder": 0,
@@ -184,9 +184,9 @@ FOE_SPAWN_DATA = [
 
 FOE_DATA = {
     "easy": {"health": 10, "speed": 1},
-    "medium": {"health": 20, "speed": 1.5},
+    "medium": {"health": 15, "speed": 1.5},
     "hard": {"health": 30, "speed": 2},
     "harder": {"health": 50, "speed": 2.5},
-    "insane": {"health": 100, "speed": 3},
-    "demon": {"health": 200, "speed": 4}
+    "insane": {"health": 75, "speed": 3},
+    "demon": {"health": 150, "speed": 10}
 }

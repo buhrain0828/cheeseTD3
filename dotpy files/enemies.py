@@ -1,7 +1,7 @@
 import pygame
 from pygame.math import Vector2
 import math
-
+import variables as var
 from allfoedata import FOE_DATA
 class Foe(pygame.sprite.Sprite):
     def __init__(self, foe_type,waypoint, images):
@@ -18,10 +18,11 @@ class Foe(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
         
-    def update(self):
-        self.move()
+    def update(self, mapspace):
+        self.move(mapspace)
+        self.check_death(mapspace)
 
-    def move(self):
+    def move(self, mapspace):
         #target waypoint
         if self.target_waypoint < len(self.waypoint):
             self.target = Vector2(self.waypoint[self.target_waypoint])
@@ -29,6 +30,8 @@ class Foe(pygame.sprite.Sprite):
         else:
             # no more waypoints: remove the sprite and stop further processing
             self.kill()
+            mapspace.health -= 1
+            mapspace.foes_missed += 1
             return
         #calculate distance to waypoint
         distance = self.movement.length()
@@ -42,4 +45,8 @@ class Foe(pygame.sprite.Sprite):
         self.rect.center = self.pos
 
 
-    
+    def check_death(self, mapspace):
+        if self.health <= 0:
+            mapspace.foes_killed += 1
+            mapspace.quesos += var.quesoperkill
+            self.kill()

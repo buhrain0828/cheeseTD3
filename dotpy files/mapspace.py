@@ -1,5 +1,6 @@
 import pygame
 from allfoedata import FOE_SPAWN_DATA
+import variables as var
 class MapSpace():
     def __init__(self, data, map_image, width, height):
         self.tilemap = []
@@ -16,7 +17,11 @@ class MapSpace():
         self.scale_y = height / (self.orig_height * data.get('tileheight', 1))
         self.round = 1
         self.foe_list = []
+        self.health = var.health
+        self.quesos = var.quesos
+        self.foes_killed = 0
         self.foes_spawned = 0
+        self.foes_missed = 0
         
     def draw(self, surface):
         surface.blit(self.image, (0, 0))
@@ -27,6 +32,18 @@ class MapSpace():
             foes_to_spawn = foes[foe_type]
             for foe in range(foes_to_spawn):
                 self.foe_list.append(foe_type)
+
+    def round_end_check(self):
+        if (self.foes_killed + self.foes_missed) >= len(self.foe_list):
+            return True
+
+    def reset_round(self):
+        #reset variables
+        self.foe_list = []
+        self.foes_killed = 0
+        self.foes_missed = 0
+        self.foes_spawned = 0
+
     def objprocess(self):
         # retrieve waypoints and tile data from json layers
         for layer in self.mapspace_data.get('layers', []):
