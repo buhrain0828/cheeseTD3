@@ -10,11 +10,10 @@ BACKGROUND_COLOR = (60, 60, 60)
 GREY0 = (60, 60, 60)
 allrounds = 20
 #player
-health = 50
+health = 75
 quesos = 800
 #enemies
 time_between_spawn = 2000
-
 quesoperkill = 10
 quesoper_roundend = 150
 #myce animations
