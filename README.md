@@ -12,3 +12,8 @@ CheeseTD3 is the complete opposite of an innovative tower defence including 1.5 
 
 
 download as a zip file. extract; exe file is in cheeseTD3-main/dist/cheeseTD3
+CREDITS
+=============
+big up the russ best tutorial ever
+https://www.youtube.com/watch?v=WRuf9iPAXfM&t=10372s
+@ozwae for myce sprites
