@@ -8,7 +8,7 @@ SCREEN_HEIGHT = TileSize * Row
 FPS = 60
 BACKGROUND_COLOR = (60, 60, 60)  
 GREY0 = (60, 60, 60)
-allrounds = 20
+allrounds = 1
 #player
 health = 75
 quesos = 800
