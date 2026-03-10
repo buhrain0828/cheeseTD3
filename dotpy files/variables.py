@@ -10,7 +10,7 @@ BACKGROUND_COLOR = (60, 60, 60)
 GREY0 = (60, 60, 60)
 allrounds = 20
 #player
-health = 100
+health = 1
 quesos = 800
 #enemies
 time_between_spawn = 2000

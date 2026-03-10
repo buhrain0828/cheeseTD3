@@ -189,7 +189,7 @@ myce_menu_row_2_y = myce_menu_start_y + myce_icon_size[1] + myce_menu_gap
 fast_forward_x = sidebar_x + var.sidebar - fastforwardimg.get_width() - 12
 fast_forward_y = 12
 start_button_y = 500
-restart_button_y = 500
+result_rect = pygame.Rect(200, 200, 400, 200)
 
 
 #initialise buttons
@@ -197,7 +197,7 @@ myce_button = Button(myce_x, 120, place_myce_image, True)
 stop_button = Button(stop_x, 180, stop_sign_image, True)
 start_button = Button(sidebar_x + (var.sidebar - startgameimg.get_width()) // 2, start_button_y, startgameimg, True)
 fastforward_button = Button(fast_forward_x, fast_forward_y, fastforwardimg, False)
-restart_button = Button(sidebar_x + (var.sidebar - restartimg.get_width()) // 2, restart_button_y, restartimg, True)
+restart_button = Button(result_rect.centerx - restartimg.get_width() // 2, result_rect.bottom - restartimg.get_height() - 20, restartimg, True)
 
 myce_menu_positions = {
     "basic": (myce_menu_start_x, myce_menu_start_y),
@@ -320,17 +320,19 @@ while running:
                 #click a myce to show range, click empty map space to clear
                 set_selected_myce(check_selection(event.pos))
     if not game_over:
-        #check loss/win before next frame draws
-        if mapspace.health <= 0:
-            game_over = True
-            game_win = -1 #lose
-        elif mapspace.round > var.allrounds:
+        #check win before next frame draws
+        if mapspace.round > var.allrounds:
             game_over = True
             game_win = 1 #win
 
         #update
         myce_group.update(foe_group)
         foe_group.update(mapspace)
+
+        #check loss after foes update so missed-enemy count is preserved
+        if mapspace.health <= 0:
+            game_over = True
+            game_win = -1 #lose
 
         #draw after map so everything stays visible
         foe_group.draw(screen)
@@ -360,7 +362,7 @@ while running:
                     mapspace.foes_spawned += 1
                     last_spawn_time = pygame.time.get_ticks()
         #advance only after every foe is gone
-        if mapspace.round_end_check():
+        if not game_over and mapspace.round_end_check():
             mapspace.quesos += var.quesoper_roundend
             mapspace.round += 1
             started = False
@@ -412,9 +414,10 @@ while running:
                 selected_myce_type = None
     #restart game if loss
     else:
-        pygame.draw.rect(screen, "black",(200,200,400,200), border_radius = 30)
+        pygame.draw.rect(screen, "black", result_rect, border_radius=30)
+        draw_words("Enemies missed:" + str(mapspace.foes_missed), text_font, "grey100", 250, 275, None)
         if game_win == -1:
-            draw_words("YOU LOST! :(", text_font, "grey100",310,230, None)
+            draw_words("YOU LOST! :(", text_font, "grey100",300,230, None)
         elif game_win == 1:
             draw_words("YOU WON!", text_font, "grey100",315,230, None)
         if restart_button.draw(screen):
